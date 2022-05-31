@@ -23,8 +23,7 @@
 					</thead>
 					
 						<tbody>
-							<!-- <scroll-view scroll-y="true" class="scroll-Y" :scroll-top="scrollTop" @scrolltoupper="upper" @scrolltolower="lower"
-							@scroll="scroll"> -->
+							
 							<template v-if="linenInfo&&linenInfo.length>0">
 								<tr v-for="(item, index) in linenInfo" :key="index" class="list-item">
 									<td>{{item.title}}</td>
@@ -37,12 +36,10 @@
 								<tr>
 									<td  colspan="4">(T＿T) 暂无数据</td>
 								</tr>
-								<!-- <view class="no-data">
-									<text>(T＿T) 暂无数据</text> 
-								</view> -->
+								
 							</template>
 
-							<!-- </scroll-view> -->
+							
 						</tbody>
 					
 					
@@ -116,10 +113,7 @@
 			})
 		}
 	},
-// onBeforeBack(options) {  
-		// 	console.log("跳转工作台")
-		
-		// },
+
 		onBackPress(){
 			console.log("onBackPress")
 			// 跳转列表页
