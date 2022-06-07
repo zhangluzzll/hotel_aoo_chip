@@ -2,12 +2,12 @@
 	<view class="content">
 		<!--共享订单状态-->
 		<uni-group title="订单状态" top="0" v-if="isPublic">
-					<uni-steps v-if="msg.status!=='已取消'" active-color="#3b99ff" :options="[{title: '待送货'}, {title: '送货中'},{title: '已完成'}]" :active="msg.statusStep"></uni-steps>
-					<uni-steps v-else active-color="#8f939c" :options="[{title: '待送货'}, {title: '已取消'}]" :active="msg.statusStep"></uni-steps>
+					<uni-steps v-if="msg.status!=='已取消'" active-color="#3b99ff" :options="[{title: '待送货',desc:msg.insertTime}, {title: '送货中',desc:msg.outFacTime},{title: '已完成',desc:msg.confirmTime}]" :active="msg.statusStep"></uni-steps>
+					<uni-steps v-else active-color="#8f939c" :options="[{title: '待送货',desc:msg.insertTime}, {title: '已取消',desc:msg.updateTime}]" :active="msg.statusStep"></uni-steps>
 		</uni-group>
 		<!--传统订单状态-->
 		<uni-group title="订单状态" top="0" v-else>
-					<uni-steps active-color="#3b99ff" :options="[{title: '脏布草待入厂'}, {title: '脏布草入厂'},{title: '净布草出厂'},{title: '订单完成'}]" :active="msg.statusStep"></uni-steps>
+					<uni-steps active-color="#3b99ff" :options="[{title: '脏布草待入厂',desc:msg.insertTime}, {title: '脏布草入厂',desc:msg.inFacTime},{title: '净布草出厂',desc:msg.outFacTime},{title: '订单完成',desc:msg.confirmTime}]" :active="msg.statusStep"></uni-steps>
 		</uni-group>
 		
 		<uni-collapse>
@@ -213,6 +213,10 @@
 				settlementStatus:"",
 				signSrc:"",
 				insertTime:"",
+				inFacTime:"",
+				outFacTime:"",
+				updateTime:"",
+				confirmTime:"",
 				linenInfo:"",
 				statusStep:0
 			},
@@ -229,14 +233,6 @@
 			price:"",
 			totalPrice:0,
 			totalOutFacCount:0,// 本单出厂总数
-			
-			// totalNWeight:"",
-			// totalNCount:0,
-			// totalNOutCount:3, 
-			
-			// totalAllWeight:"",
-			// totalAllCount:"",
-			// totalAllOutCount:5, // 共计出厂总布草数
 			
 			receiveCount:"",// 共享订单 实收总数
 			beginFile:"", // 下单 
@@ -279,20 +275,20 @@
 		getInfo(data,url){
 			api.orderDetail(data,url).then((res) => {
 				if(res.success){
-					
-					
+
 					this.msg.settlementPrice = res.data.settlementPrice;
 					this.msg.driverName = res.data.driverName;
 					this.msg.driverPhone = res.data.driverPhone;
 					this.totalPrice = res.data.totalPrice; // 传统：订单总价 共享：实际总价
 					this.msg.insertTime = res.data.insertTime;
+					this.msg.outFacTime = res.data.outFacTime;
+					this.msg.confirmTime = res.data.confirmTime;
 					this.msg.floor = res.data.floor;
 					
 					// 传统订单特有字段
 					if(!this.isPublic){
 						this.msg.orderId = res.data.orderId;
 						this.msg.operatorName = res.data.operatorName;
-						
 						this.msg.hasChip = res.data.hasChip;
 						this.msg.remarkOut = res.data.remark;// 收货备注
 						// this.totalOutFacCount = res.data.totalOutFacCount;
@@ -302,6 +298,7 @@
 						this.endFile =  res.data.endFile;
 						this.totalWeight = res.data.totalWeight;
 						this.msg.settlementStatus = commonFn.settlementType(res.data.settlementStatus);
+						this.msg.inFacTime = res.data.inFacTime;
 						this.linenInfo = res.data.orderCategories; // 本订单 布草详情
 						this.linenInfo2 = res.data.notInOrderCategories; // 随本订单出厂的其它布草
 						if(this.linenInfo.length > 0){
@@ -322,6 +319,7 @@
 						// 共享特有
 						this.msg.orderId = res.data.id;
 						this.msg.statusStep = commonFn.statusShareIndex(res.data.status);	
+						this.msg.updateTime = res.data.updateTime;
 						// console.log(this.msg.statusStep)
 						this.msg.settlementStatus = res.data.settlementStatus;
 						this.msg.status = res.data.status;
@@ -362,6 +360,7 @@
 	font-weight: normal;
 	display: flex;
 	align-items: center;
+	
 }
 .title-box text{
 	color:#007aff;
@@ -389,7 +388,6 @@
 
 table{
 	width: 100%;
-	// table-layout: fixed;
 	text-align: center;
 	color: $uni-text-color;
 	padding: 0;
@@ -397,8 +395,6 @@ table{
 
 table th,td{
 	padding: 20rpx 0;
-	// width: 12%;
-	// word-wrap:break-word; 
 }
 #mytabel tr:nth-child(2n){
 		background-color: rgba(118, 183, 255,.1); 

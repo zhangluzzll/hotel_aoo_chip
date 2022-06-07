@@ -64,7 +64,7 @@
 			
 			<view>
 				<!-- <h4>下单：</h4> -->
-				<view class="img-box ">
+				<view class="img-box1 ">
 					<image :src="msg.signSrc" alt="" mode="heightFix">
 				</view>
 			</view>
@@ -187,31 +187,16 @@ tfoot tr{
 		color: #007aff;
 		position: relative;
 	}
-	/* 二维码 */
-	.img-box{
-		width: 100%;
-		margin-bottom: 15px;
-		text-align: center;
+	
+	/*电子签名*/
+	.img-box1{
+		display: flex; 
+		justify-content: center;
 	}
 	.img-box1 image{
-		width: 200px;
-		height: 200px ;
-		text-align: center;
+		// width: 200px;
+		height: 100px ;
 	}
 	
-	.canvas {
-		margin-top: 50rpx;
-		text-align: center;
-	}
-	.canvas-hide {
-			/* 1 */
-			position: fixed;
-			right: 100vw;
-			bottom: 100vh;
-			/* 2 */
-			z-index: -9999;
-			/* 3 */
-			opacity: 0;
-		}
 		
 </style>
